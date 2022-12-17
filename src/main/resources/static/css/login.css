@@ -1,0 +1,127 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.section {
+    position: relative;
+    height: 100vh;
+}
+
+.product-logo {
+    height: 120px;
+    font-size: 80px;
+    font-weight: 900;
+    color: white;
+    padding-top: 130px;
+}
+
+.product-content {
+    height: 120px;
+    font-size: 20px;
+    font-weight: 900;
+    color: #DDDDDD;
+    padding-top: 130px;
+}
+
+.product-area {
+    width: 600px;
+    margin-left: 50px;
+    padding-top: 60px;
+}
+
+.animation {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #1be1f6;
+}
+
+@keyframes slashStar {
+    50% {background: #1be1f6}
+    100% {background: #2E2D3C}
+}
+
+.animation1 {
+    left: 15%;
+    top: 70%;
+    animation: slashStar 2s ease-in-out .3s infinite;
+}
+
+.animation2 {
+    left: 34%;
+    top: 35%;
+    animation: slashStar 2s ease-in-out 1.2s infinite;
+}
+
+.animation3 {
+    left: 53%;
+    top: 20%;
+    animation: slashStar 2s ease-in-out .5s infinite;
+}
+
+.animation4 {
+    left: 72%;
+    top: 64%;
+    animation: slashStar 2s ease-in-out .8s infinite;
+}
+
+.animation5 {
+    left: 87%;
+    top: 30%;
+    animation: slashStar 2s ease-in-out 1.5s infinite;
+}
+
+.login {
+    background: white;
+    position: absolute;
+    right: 40px;
+    width: 480px;
+    height: 540px;
+    top: 90px;
+    border-radius: 5px;
+}
+
+.login-font {
+    line-height: 45px;
+    font-size: 32px;
+    margin-top: 58px;
+    text-align: center;
+}
+
+.login-internal {
+    line-height: 25px;
+    font-size: 20px;
+    margin-top: 25px;
+    text-align: center;
+    font-weight: 800;
+    color: rgba(255,0,0,.8);
+}
+
+.login-form {
+    width: 360px;
+    margin: 40px auto;
+}
+
+.login-button {
+    width: 100%;
+    height: 60px;
+    font-size: 20px;
+    background: #4190ff;
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+}
+
+.login-input {
+    margin-bottom: 16px;
+    width: 100%;
+    height: 55px;
+    font-size: 16px;
+    border: 1px solid #A6A6A6;
+    border-radius: 5px;
+    padding-left: 10px;
+    outline: none;
+}

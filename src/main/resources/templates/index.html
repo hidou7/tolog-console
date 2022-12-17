@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ToLog</title>
+    <link href="../static/css/header.css" th:href="@{/css/header.css}" rel="stylesheet"/>
+    <link href="../static/css/index.css" th:href="@{/css/index.css}" rel="stylesheet"/>
+    <link href="../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}" rel="stylesheet"/>
+</head>
+<body>
+<div>
+    <header class="header-container">
+        <div class="header-logo">ToLog</div>
+        <i id="header-logout" class="layui-icon layui-icon-logout" onclick="logout()"></i>
+    </header>
+    <form class="layui-form search" action="">
+        <input id="appName" type="text" name="title" placeholder="应用名称" style="font-size: 15px" autocomplete="off" class="layui-input search-input">
+        <input id="errorMsg" type="text" name="title" placeholder="报错信息" style="font-size: 15px" autocomplete="off" class="layui-input search-input">
+        <div class="search-level">
+            <select id="level" name="level" class="search-select">
+                <option value="" style="background: #8D8D8D">日志级别</option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARN">WARN</option>
+                <option value="ERROR">ERROR</option>
+            </select>
+        </div>
+        <input type="text" placeholder="时间范围" id="timeRange">
+        <button type="button" class="layui-btn search-button" style="margin-left: 30px" onclick="logSearch(0)">查询</button>
+        <div><i id="search-loading" class="layui-icon layui-icon-loading-1 layui-anim layui-anim-rotate layui-anim-loop" style="color: #8D8D8D;display: none;font-size: 70px;top: 50%;left: 50%;position: absolute"></i></div>
+    </form>
+    <hr style="height: 10px">
+    <div class="search-data">
+    </div>
+</div>
+</body>
+<script src="../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+<script src="../static/js/common.js" th:src="@{/js/common.js}"></script>
+<script th:inline="javascript">
+    let pageNum = 1;
+    let lock = 0;
+    let count = 0;
+    let scrollTop = 0;
+
+    layui.use('laydate', function(){
+        let laydate = layui.laydate;
+        laydate.render({
+            elem: '#timeRange',
+            type: 'datetime',
+            range: true,
+            change: function(value, date, endDate){
+                var hours = endDate.hours;
+                var minutes = endDate.minutes;
+                var seconds = endDate.seconds;
+                if (hours == "0" && minutes == "0" && seconds == "0"){
+                    $(".layui-laydate-footer [lay-type='datetime'].laydate-btns-time").click();
+                    $(".laydate-main-list-1 .layui-laydate-content li ol li:last-child").click();
+                    $(".layui-laydate-footer [lay-type='date'].laydate-btns-time").click();
+                }
+            }
+        });
+    });
+
+    function logSearch(type) {
+        if(lock === 1) return;
+        lock = 1;
+        if(type === 0){ // 查询触发
+            count = 0;
+            pageNum = 1;
+            document.querySelector('.search-data').innerHTML = '';
+        }else{ // 下拉滚动调触发
+            pageNum ++;
+        }
+        let startTime = null;
+        let endTime = null;
+        const timeRange = ($("#timeRange").val());
+        if($.common.isNotEmpty(timeRange)){
+            startTime = timeRange.split(" - ")[0];
+            endTime = timeRange.split(" - ")[1];
+        }
+        $.ajax({
+            url: ctx + "log/search",
+            type: "get",
+            data: {
+                appName: $("#appName").val(),
+                errorMsg: $("#errorMsg").val(),
+                level: $("#level").val(),
+                startTimestamp: $.common.isEmpty(startTime) ? null : new Date(startTime).getTime(),
+                endTimestamp: $.common.isEmpty(endTime) ? null : new Date(endTime).getTime(),
+                pageNum: pageNum,
+                pageSize: 5
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("token", localStorage.getItem("token"));
+                $("#search-loading").show();
+            },
+            success: function(result) {
+                lock = 0;
+                loadHide();
+                if(result.code == StatusCode.success){
+                    const data = [];
+                    if(type === 1 && result.data.length === 0){
+                        pageNum --;
+                    }
+                    result.data.forEach(item => {
+                        item.error.split("\n").forEach(e => data.push(e));
+                        item.traceLines.forEach(line => line.split("\n").forEach(e => data.push(e)));
+                    });
+                    data.forEach(item => {
+                        count++;
+                        $(".search-data").append(`<div style="white-space: pre;"><span style="color: #8D8D8D">${formatCount(count)}   </span>${item}</div>`);
+                    });
+                }else{
+                    if(result.code == StatusCode.notLogin){
+                        logout();
+                    }
+                    alert(result.message);
+                }
+            },
+            error: function (xhr) {
+                lock = 0;
+                loadHide();
+                alert("系统错误, " + xhr.status);
+            }
+        });
+    }
+
+    function formatCount(count) {
+        let result = "";
+        let str = count.toString();
+        if(str.length < 5){
+            for (let i = 0; i < 5 - str.length; i++) {
+                result += "  ";
+            }
+        }
+        result += str;
+        return result;
+    }
+
+    function loadHide() {
+        $("#search-loading").hide();
+    }
+
+    function hrefLogin() {
+        location.href = ctx + 'login';
+    }
+
+    function logout() {
+        localStorage.clear();
+        hrefLogin();
+    }
+
+    $(function () {
+        let token = localStorage.getItem("token");
+        if($.common.isEmpty(token)){
+            hrefLogin();
+        }
+        // 滚动事件
+        $(".search-data").scroll(function() {
+            let divHeight = $(this).height();
+            let nScrollHeight = $(this)[0].scrollHeight;
+            let nScrollTop = $(this)[0].scrollTop;
+            if(scrollTop !== nScrollTop && nScrollTop > 0 && nScrollTop + divHeight >= nScrollHeight) {
+                logSearch(1);
+                scrollTop = nScrollTop;
+            }
+
+        });
+    });
+
+    let ctx = [[@{/}]];
+</script>
+</html>

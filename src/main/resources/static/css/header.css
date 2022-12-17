@@ -1,0 +1,27 @@
+.header-logo {
+    color: white;
+    margin-left: 30px;
+    width: 96px;
+    vertical-align: sub;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.header-container {
+    background: #252a2f;
+    width: 100%;
+    margin: 0 auto;
+    height: 66px;
+    line-height: 66px;
+    display: flex;
+}
+
+#header-logout {
+    font-size: 22px;
+    margin-left: auto;
+    margin-right: 30px;
+    height: 65px;
+    color: white;
+    cursor: pointer;
+    margin-top: 2px;
+}

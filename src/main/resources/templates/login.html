@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ToLog</title>
+    <link href="../static/css/login.css" th:href="@{/css/login.css}" rel="stylesheet"/>
+    <link href="../static/css/header.css" th:href="@{/css/header.css}" rel="stylesheet"/>
+</head>
+<body style="overflow: hidden">
+    <div>
+        <header class="header-container">
+            <div class="header-logo">ToLog</div>
+        </header>
+        <section class="section"  th:style="'background: url(' + @{/img/black_dot.png} + ') 0% 0% / 14px 14px repeat;'">
+            <div class="product-area">
+                <p class="product-logo">ToLog.</p>
+<!--                一个简单而实用的日志框架。只需要一个数据库就可以实现集群或微服务的日志系统。-->
+                <p class="product-content">A simple and practical logging framework. Only one database is needed to implement the log system of cluster or microservice.</p>
+            </div>
+            <div class="animation animation1"></div>
+            <div class="animation animation2"></div>
+            <div class="animation animation3"></div>
+            <div class="animation animation4"></div>
+            <div class="animation animation5"></div>
+            <div class="login">
+                <div class="login-font">登录</div>
+                <div class="login-internal">内部系统，不可暴露到公网</div>
+                <form class="login-form" method="post" action="#" onsubmit="return false;">
+                    <input id="username" type="text" name="username" class="login-input" placeholder="请输入用户名"/>
+                    <input id="password" type="password" name="password" class="login-input" placeholder="请输入密码"/>
+                    <br><br>
+                    <button id="button" type="button" class="login-button" onclick="login()">提交</button>
+                </form>
+            </div>
+        </section>
+    </div>
+</body>
+<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+<script src="../static/js/common.js" th:src="@{/js/common.js}"></script>
+<script th:inline="javascript">
+    function checkUsername() {
+        var username = $("#username").val();
+        if($.common.isEmpty(username)){
+            $("#username").css("border", "1px solid red")
+            return false;
+        }
+        $("#username").css("border", "")
+        return true;
+    }
+
+    function checkPassword() {
+        var password = $("#password").val();
+        if($.common.isEmpty(password)){
+            $("#password").css("border", "1px solid red")
+            return false;
+        }
+        $("#password").css("border", "")
+        return true;
+    }
+
+    function login(){
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var checkFlag1 = checkUsername();
+        var checkFlag2 = checkPassword();
+        if(!checkFlag1 || !checkFlag2){
+            return;
+        }
+        $.ajax({
+            url: ctx + "login",
+            type: "post",
+            contentType : 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                username: username,
+                password: password
+            }),
+            success: function(result) {
+                if(result.code == StatusCode.success){
+                    localStorage.setItem("token", result.data);
+                    location.href = ctx + 'index';
+                }else{
+                    $("#username").val("");
+                    $("#password").val("");
+                    alert(result.message);
+                }
+            },
+            error: function (xhr) {
+                alert(xhr.status);
+            }
+        })
+    }
+
+    function inputFocus() {
+        $(this).css("border", "");
+    }
+
+    $(function () {
+        $("#username").focus(inputFocus);
+        $("#password").focus(inputFocus);
+        $("#password").keydown(function (e){
+            if(e.which == "13"){
+                login();
+            }
+        })
+    });
+
+    var ctx = [[@{/}]];
+</script>
+</html>

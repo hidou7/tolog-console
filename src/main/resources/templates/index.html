@@ -161,11 +161,12 @@
             let divHeight = $(this).height();
             let nScrollHeight = $(this)[0].scrollHeight;
             let nScrollTop = $(this)[0].scrollTop;
-            if(scrollTop !== nScrollTop && nScrollTop > 0 && nScrollTop + divHeight >= nScrollHeight) {
-                logSearch(1);
+            if(scrollTop !== nScrollTop){
+                if(nScrollTop > 0 && nScrollTop + divHeight >= nScrollHeight) {
+                    logSearch(1);
+                }
                 scrollTop = nScrollTop;
             }
-
         });
     });
 

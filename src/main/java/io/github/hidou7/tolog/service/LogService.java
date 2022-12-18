@@ -37,7 +37,7 @@ public class LogService {
                         + record.getLevelString() + " --- ["
                         + record.getThreadName() + "] "
                         + record.getCallerClass() + "."
-                        + record.getCallerMethod() + " : "
+                        + record.getCallerMethod() + ": "
                         + record.getFormattedMessage();
                 List<LoggingEventExceptionEntity> list = exceptionMap.getOrDefault(record.getEventId(), new ArrayList<>());
                 list.sort(Comparator.comparing(LoggingEventExceptionEntity::getI));

@@ -89,7 +89,7 @@
                 startTimestamp: $.common.isEmpty(startTime) ? null : new Date(startTime).getTime(),
                 endTimestamp: $.common.isEmpty(endTime) ? null : new Date(endTime).getTime(),
                 pageNum: pageNum,
-                pageSize: 5
+                pageSize: 50
             },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("token", localStorage.getItem("token"));

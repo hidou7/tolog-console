@@ -50,10 +50,15 @@
             type: 'datetime',
             range: true,
             value: getInitTimeRange(),
-            isInitValue: false
+            isInitValue: false,
+            ready: function () {
+                $('.laydate-btns-clear').click(function () {
+                    $('#timeRange').val('');
+                });
+            }
         });
     });
-    
+
     function getInitTimeRange() {
         let time = ' 00:00:00';
         let start = new Date();

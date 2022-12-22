@@ -49,18 +49,19 @@
             elem: '#timeRange',
             type: 'datetime',
             range: true,
-            change: function(value, date, endDate){
-                var hours = endDate.hours;
-                var minutes = endDate.minutes;
-                var seconds = endDate.seconds;
-                if (hours == "0" && minutes == "0" && seconds == "0"){
-                    $(".layui-laydate-footer [lay-type='datetime'].laydate-btns-time").click();
-                    $(".laydate-main-list-1 .layui-laydate-content li ol li:last-child").click();
-                    $(".layui-laydate-footer [lay-type='date'].laydate-btns-time").click();
-                }
-            }
+            value: getInitTimeRange(),
+            isInitValue: false
         });
     });
+    
+    function getInitTimeRange() {
+        let time = ' 00:00:00';
+        let start = new Date();
+        let end = new Date();
+        end.setDate(end.getDate() + 1);
+        return  start.toLocaleDateString().split('/').join('-') + time + ' - '
+            + end.toLocaleDateString().split('/').join('-') + time;
+    }
 
     function logSearch(type) {
         if(lock === 1) return;

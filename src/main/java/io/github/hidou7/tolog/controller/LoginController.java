@@ -4,6 +4,7 @@ import io.github.hidou7.tolog.config.UserInfoProperties;
 import io.github.hidou7.tolog.dto.LoginDto;
 import io.github.hidou7.tolog.exception.BusinessException;
 import io.github.hidou7.tolog.util.JwtUtil;
+import io.github.hidou7.tolog.vo.LoginVo;
 import io.github.hidou7.tolog.vo.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ public class LoginController {
 
     @PostMapping("login")
     @ResponseBody
-    public R<String> login(@RequestBody @Valid LoginDto dto){
+    public R<LoginVo> login(@RequestBody @Valid LoginDto dto){
         if(dto.getUsername().equals(this.userInfoProperties.getUsername()) && dto.getPassword().equals(this.userInfoProperties.getPassword())){
             return R.ok(JwtUtil.createToken());
         }

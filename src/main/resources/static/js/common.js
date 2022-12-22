@@ -22,6 +22,20 @@
             // 判断一个字符串是否为非空串
             isNotEmpty: function (value) {
                 return !$.common.isEmpty(value);
+            },
+            checkToken: function(){
+                if(this.isEmpty(this.getToken())){
+                    return false;
+                }
+                return true;
+            },
+            getToken: function () {
+                let token = localStorage.getItem("token");
+                let expire = localStorage.getItem("expire");
+                if(this.isEmpty(token) || new Date().getTime() >= expire){
+                    token = null;
+                }
+                return token;
             }
         }
     });

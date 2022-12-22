@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import io.github.hidou7.tolog.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,10 +17,12 @@ public class JwtUtil {
     /**
      * 生成token并保存用户信息到redis
      */
-    public static String createToken(){
-        return JWT.create()
-                  .withClaim(expireTimestamp, System.currentTimeMillis() + expireDuration)
-                  .sign(secretKey);
+    public static LoginVo createToken(){
+        Long expire = System.currentTimeMillis() + expireDuration;
+        String token =  JWT.create()
+                .withClaim(expireTimestamp, expire)
+                .sign(secretKey);
+        return new LoginVo(token, expire);
     }
 
     public static boolean verify(String token){

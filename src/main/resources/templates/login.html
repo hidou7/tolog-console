@@ -76,7 +76,8 @@
             }),
             success: function(result) {
                 if(result.code == StatusCode.success){
-                    localStorage.setItem("token", result.data);
+                    localStorage.setItem("token", result.data.token);
+                    localStorage.setItem("expire", result.data.expire);
                     location.href = ctx + 'index';
                 }else{
                     $("#username").val("");

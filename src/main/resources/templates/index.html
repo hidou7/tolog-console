@@ -153,8 +153,7 @@
     }
 
     $(function () {
-        let token = localStorage.getItem("token");
-        if($.common.isEmpty(token)){
+        if(!$.common.checkToken()){
             hrefLogin();
         }
         // 滚动事件

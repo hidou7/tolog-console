@@ -31,10 +31,4 @@ public class LoggingEventEntity {
     private String callerLine;
 
     private String appName;
-
-    @TableField(exist = false)
-    private List<String> traceLines;
-
-    @TableField(exist = false)
-    private String happenTime;
 }

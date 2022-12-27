@@ -26,10 +26,13 @@
             </select>
         </div>
         <input type="text" placeholder="时间范围" id="timeRange">
-        <button type="button" class="layui-btn search-button" style="margin-left: 30px" onclick="logSearch(0)">查询</button>
+        <button type="button" class="layui-btn search-button" style="margin-left: 30px" onclick="logSearch()">查询</button>
         <div><i id="search-loading" class="layui-icon layui-icon-loading-1 layui-anim layui-anim-rotate layui-anim-loop" style="color: #8D8D8D;display: none;font-size: 70px;top: 50%;left: 50%;position: absolute"></i></div>
     </form>
-    <hr style="height: 10px">
+    <div id="laypage" style="margin-left: 30px;margin-top: 5px;height: 10px">
+        <fieldset class="layui-elem-field layui-field-title"></fieldset>
+    </div>
+    <hr style="height: 32px">
     <div class="search-data">
     </div>
 </div>
@@ -38,14 +41,14 @@
 <script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
 <script src="../static/js/common.js" th:src="@{/js/common.js}"></script>
 <script th:inline="javascript">
-    let pageNum = 1;
     let lock = 0;
-    let count = 0;
     let scrollTop = 0;
+    let pageNum = 1;
+    let pageSize = 5;
+    const limits = [5, 10, 20];
 
     layui.use('laydate', function(){
-        let laydate = layui.laydate;
-        laydate.render({
+        layui.laydate.render({
             elem: '#timeRange',
             type: 'datetime',
             range: true,
@@ -56,6 +59,13 @@
                     $('#timeRange').val('');
                 });
             }
+        });
+
+        layui.laypage.render({
+            elem: 'laypage',
+            limit: pageSize,
+            limits: limits,
+            layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
         });
     });
 
@@ -68,22 +78,22 @@
             + end.toLocaleDateString().split('/').join('-') + time;
     }
 
-    function logSearch(type) {
+    function logSearch(pageDto) {
         if(lock === 1) return;
         lock = 1;
-        if(type === 0){ // 查询触发
-            count = 0;
-            pageNum = 1;
-            document.querySelector('.search-data').innerHTML = '';
-        }else{ // 下拉滚动调触发
-            pageNum ++;
-        }
+        document.querySelector('.search-data').innerHTML = '';
         let startTime = null;
         let endTime = null;
         const timeRange = ($("#timeRange").val());
         if($.common.isNotEmpty(timeRange)){
             startTime = timeRange.split(" - ")[0];
             endTime = timeRange.split(" - ")[1];
+        }
+        if(pageDto == null){
+            pageNum = 1;
+        }else{
+            pageNum = pageDto.curr;
+            pageSize = pageDto.limit;
         }
         $.ajax({
             url: ctx + "log/search",
@@ -95,27 +105,40 @@
                 startTimestamp: $.common.isEmpty(startTime) ? null : new Date(startTime).getTime(),
                 endTimestamp: $.common.isEmpty(endTime) ? null : new Date(endTime).getTime(),
                 pageNum: pageNum,
-                pageSize: 50
+                pageSize: pageSize
             },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("token", localStorage.getItem("token"));
                 $("#search-loading").show();
             },
             success: function(result) {
+                let rowCount = 0;
                 lock = 0;
                 loadHide();
                 if(result.code == StatusCode.success){
                     const data = [];
-                    if(type === 1 && result.data.length === 0){
-                        pageNum --;
-                    }
                     result.data.forEach(item => {
-                        item.error.split("\n").forEach(e => data.push(e));
+                        if(item.error != null){
+                            item.error.split("\n").forEach(e => data.push(e));
+                        }
                         item.traceLines.forEach(line => line.split("\n").forEach(e => data.push(e)));
                     });
                     data.forEach(item => {
-                        count++;
-                        $(".search-data").append(`<div style="white-space: pre;"><span style="color: #8D8D8D">${formatCount(count)}   </span>${item}</div>`);
+                        rowCount++;
+                        $(".search-data").append(`<div style="white-space: pre;"><span style="color: #8D8D8D">${formatCount(rowCount)}   </span>${item}</div>`);
+                    });
+                    layui.laypage.render({
+                        elem: 'laypage',
+                        count: result.total,
+                        groups: 3,
+                        curr: pageNum,
+                        limit: pageSize,
+                        limits: limits,
+                        layout: ['count', 'prev', 'page', 'next', 'limit', 'skip'],
+                        jump: function(obj, first){
+                            if(first) return;
+                            logSearch(obj);
+                        }
                     });
                 }else{
                     if(result.code == StatusCode.notLogin){
@@ -161,18 +184,7 @@
         if(!$.common.checkToken()){
             hrefLogin();
         }
-        // 滚动事件
-        $(".search-data").scroll(function() {
-            let divHeight = $(this).height();
-            let nScrollHeight = $(this)[0].scrollHeight;
-            let nScrollTop = $(this)[0].scrollTop;
-            if(scrollTop !== nScrollTop){
-                if(nScrollTop > 0 && nScrollTop + divHeight >= nScrollHeight) {
-                    logSearch(1);
-                }
-                scrollTop = nScrollTop;
-            }
-        });
+        logSearch();
     });
 
     let ctx = [[@{/}]];

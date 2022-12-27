@@ -1,23 +1,11 @@
 package io.github.hidou7.tolog.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotNull;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class LogSearchDto {
-
-    /**
-     * 页数
-     */
-    @NotNull
-    private Integer pageNum;
-
-    /**
-     * 页大小
-     */
-    @NotNull
-    private Integer pageSize;
+public class LogSearchDto extends PageDto{
 
     /**
      * 服务名称

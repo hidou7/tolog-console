@@ -23,10 +23,10 @@ public class LogService {
     @Autowired
     private LoggingEventExceptionMapper loggingEventExceptionMapper;
 
-    public List<LogSearchVo> search(LogSearchDto dto) {
+    public Page<LogSearchVo> search(LogSearchDto dto) {
         List<LogSearchVo> result = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss.SSS");
-        Page<LoggingEventEntity> page = this.loggingEventMapper.selectPage(new Page<>(dto.getPageNum(), dto.getPageSize()), this.getLoggingEventWrapper(dto));
+        Page<LoggingEventEntity> page = this.loggingEventMapper.selectPage(dto.getPage(), this.getLoggingEventWrapper(dto));
         List<String> eventIds = page.getRecords().stream().map(LoggingEventEntity::getEventId).collect(Collectors.toList());
         if(eventIds.size() > 0){
             List<LoggingEventExceptionEntity> exceptions = this.loggingEventExceptionMapper.selectList(new QueryWrapper<LoggingEventExceptionEntity>().in("event_id", eventIds));
@@ -45,7 +45,10 @@ public class LogService {
                 result.add(new LogSearchVo(error, traceLines));
             }
         }
-        return result;
+        Page<LogSearchVo> p = new Page<>();
+        p.setRecords(result);
+        p.setTotal(page.getTotal());
+        return p;
     }
 
     private QueryWrapper<LoggingEventEntity> getLoggingEventWrapper(LogSearchDto dto){

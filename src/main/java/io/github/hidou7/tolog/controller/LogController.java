@@ -1,5 +1,6 @@
 package io.github.hidou7.tolog.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.hidou7.tolog.annotation.Auth;
 import io.github.hidou7.tolog.dto.LogSearchDto;
 import io.github.hidou7.tolog.service.LogService;
@@ -26,8 +27,8 @@ public class LogController {
     @GetMapping("search")
     @Auth
     public R<List<LogSearchVo>> search(@Valid LogSearchDto dto){
-        List<LogSearchVo> p = this.logService.search(dto);
-        return R.ok(p);
+        Page<LogSearchVo> p = this.logService.search(dto);
+        return R.page(p);
     }
 
     @GetMapping("getAppNames")

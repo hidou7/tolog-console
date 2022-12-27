@@ -22,7 +22,7 @@
 #timeRange {
     margin-left: 30px;
     padding-left: 10px;
-    width: 320px;
+    width: 300px;
     border: 1px rgb(238,238,238) solid;
     border-radius: 2px;
 }
@@ -32,16 +32,11 @@
     position: absolute;
     left: 0px;
     right: 0px;
-    top: 153px;
+    top: 187px;
     bottom: 10px;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: auto;
 }
-
-
-/*.search-button {*/
-/*    background: rgb(81,129,254)  !important*/
-/*}*/
 
 .layui-form-select dl dd.layui-this{
     background-color: white !important;

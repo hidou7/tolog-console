@@ -21,7 +21,7 @@ public class R<T> {
     }
 
     public static <T> R<T> error(Integer code, String message) {
-        return new R<>(code, message, null);
+        return new R<>(code, message);
     }
 
     public static <T> R<T> error(ErrorCode errorCode) {
@@ -29,7 +29,7 @@ public class R<T> {
     }
 
     public static <T> R<T> error(String message) {
-        return new R<>(ErrorCode.error.code, message, null);
+        return R.error(ErrorCode.error.code, message);
     }
 
     private R(Integer code, String message) {

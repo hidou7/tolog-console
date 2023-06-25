@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.hidou7</groupId>
+    <groupId>com.hidou7</groupId>
     <artifactId>tolog-console</artifactId>
     <version>1.0.3</version>
 
@@ -34,10 +34,15 @@
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.28</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.4</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

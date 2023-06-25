@@ -115,21 +115,23 @@
                 let rowCount = 0;
                 lock = 0;
                 loadHide();
-                if(result.code == StatusCode.success){
+                if(result.code === StatusCode.success){
                     const data = [];
-                    result.data.forEach(item => {
-                        if(item.error != null){
-                            item.error.split("\n").forEach(e => data.push(e));
+                    for (let i = 0; i < result.data.list.length; i++) {
+                        let item = result.data.list[i];
+                        data.push(item.error);
+                        item.traceLines.forEach(e => data.push(e));
+                        if(i < result.data.list.length - 1){
+                            data.push("");
                         }
-                        item.traceLines.forEach(line => line.split("\n").forEach(e => data.push(e)));
-                    });
+                    }
                     data.forEach(item => {
                         rowCount++;
                         $(".search-data").append(`<div style="white-space: pre;"><span style="color: #8D8D8D">${formatCount(rowCount)}   </span>${item}</div>`);
                     });
                     layui.laypage.render({
                         elem: 'laypage',
-                        count: result.total,
+                        count: result.data.total,
                         groups: 3,
                         curr: pageNum,
                         limit: pageSize,
@@ -141,7 +143,7 @@
                         }
                     });
                 }else{
-                    if(result.code == StatusCode.notLogin){
+                    if(result.code === StatusCode.notLogin){
                         logout();
                     }
                     alert(result.message);

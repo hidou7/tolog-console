@@ -29,8 +29,10 @@ public class LogService {
         Page<LoggingEventEntity> page = this.loggingEventMapper.selectPage(dto.getPage(), this.getLoggingEventWrapper(dto));
         List<Long> eventIds = page.getRecords().stream().map(LoggingEventEntity::getEventId).collect(Collectors.toList());
         if(eventIds.size() > 0){
-            List<LoggingEventExceptionEntity> exceptions = this.loggingEventExceptionMapper.selectList(new QueryWrapper<LoggingEventExceptionEntity>().in("event_id", eventIds));
-            Map<Long, List<LoggingEventExceptionEntity>> exceptionMap = exceptions.stream().collect(Collectors.groupingBy(LoggingEventExceptionEntity::getEventId, Collectors.toList()));
+            List<LoggingEventExceptionEntity> exceptions = this.loggingEventExceptionMapper.selectList(
+                    new QueryWrapper<LoggingEventExceptionEntity>().in("event_id", eventIds));
+            Map<Long, List<LoggingEventExceptionEntity>> exceptionMap = exceptions.stream()
+                    .collect(Collectors.groupingBy(LoggingEventExceptionEntity::getEventId, Collectors.toList()));
             for (LoggingEventEntity record : page.getRecords()) {
                 String error = sdf.format(new Date(record.getTimestmp())) + " #"
                         + record.getAppName() + " "

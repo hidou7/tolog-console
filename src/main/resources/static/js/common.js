@@ -75,6 +75,18 @@
                     }
                     return value || 0;
                 })
+            },
+            // 右对齐
+            alignRightFormat(obj, size) {
+                let result = "";
+                let str = obj.toString();
+                if(str.length < size){
+                    for (let i = 0; i < size - str.length; i++) {
+                        result += "  ";
+                    }
+                }
+                result += str;
+                return result;
             }
         }
     });

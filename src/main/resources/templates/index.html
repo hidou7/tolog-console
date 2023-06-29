@@ -125,10 +125,12 @@
                             data.push("");
                         }
                     }
+                    let content = '';
                     data.forEach(item => {
                         rowCount++;
-                        $(".search-data").append(`<div style="white-space: pre;"><span style="color: #8D8D8D">${formatCount(rowCount)}   </span>${item}</div>`);
+                        content += `<div class="log-row"><span class="log-num">${$.common.alignRightFormat(rowCount, 5)}   </span>${item}</div>`;
                     });
+                    $(".search-data").append(content);
                     layui.laypage.render({
                         elem: 'laypage',
                         count: result.data.total,
@@ -155,18 +157,6 @@
                 alert("系统错误, " + xhr.status);
             }
         });
-    }
-
-    function formatCount(count) {
-        let result = "";
-        let str = count.toString();
-        if(str.length < 5){
-            for (let i = 0; i < 5 - str.length; i++) {
-                result += "  ";
-            }
-        }
-        result += str;
-        return result;
     }
 
     function loadHide() {

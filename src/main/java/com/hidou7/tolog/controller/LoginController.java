@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 
+/**
+ * 登录管理
+ */
 @Controller
 public class LoginController {
 

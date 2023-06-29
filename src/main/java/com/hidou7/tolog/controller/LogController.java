@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * 日志管理
+ */
 @RestController
 @RequestMapping("log")
+@Auth
 public class LogController {
 
     @Autowired
@@ -26,14 +30,12 @@ public class LogController {
      * 分页查询
      */
     @GetMapping("search")
-    @Auth
     public R<PageData<LogSearchVo>> search(@Valid LogSearchDto dto){
         Page<LogSearchVo> p = this.logService.search(dto);
         return R.success(PageData.of(p));
     }
 
     @GetMapping("getAppNames")
-    @Auth
     public R<List<String>> getAppNames(){
         List<String> list = this.logService.getAppNames();
         return R.success(list);

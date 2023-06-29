@@ -42,3 +42,12 @@
     background-color: white !important;
     color: black !important;
 }
+
+.log-row {
+    white-space: pre;
+}
+
+.log-num {
+    color: #8D8D8D;
+    user-select: none;
+}
